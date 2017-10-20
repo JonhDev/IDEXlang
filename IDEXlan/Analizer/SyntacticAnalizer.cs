@@ -14,19 +14,19 @@ namespace IDEXlan.Analizer
         {
             Code = code;
         }
-
+        ExpresionesReg reg = new ExpresionesReg();
         public List<ErrorTableModel> Analize()
         {
             List<ErrorTableModel> error = new List<ErrorTableModel>();
             Stack<char> carEsp = new Stack<char>();
             bool hayComillas = false;
-
             string[] lineas = Code.Split('\r');
             int numPyC = 0;
             for (int i = 0; i < lineas.Length; i++)
             {
                 foreach (char c in lineas[i])
                 {
+                    ErrorTableModel errorP = AnalizarVariables(lineas[i]);
                     if (c == ';')
                     {
                         numPyC++;
@@ -85,6 +85,17 @@ namespace IDEXlan.Analizer
 
 
             return error;
+        }
+
+        private ErrorTableModel AnalizarVariables(string renglon)
+        {
+
+            if (renglon == ExpresionesReg.vari || renglon ==)
+            {
+                
+            }
+            return null;
+
         }
     }
 }

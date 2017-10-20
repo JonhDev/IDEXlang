@@ -9,22 +9,22 @@ namespace IDEXlan.Analizer
 {
    public  class ExpresionesReg
     {
-        public const string letra = "[a-z|A-Z]";
-        public const string digito = "[0-9]";
-        public const string OpLog = "[&|\u007c\u007c|&&|!]";
-        public const string OpRel = "[<|>|=|>=|<=|==|!=]";
-        public const string OpUni = "[\u002B]{2}$|[--]{2}$";
-        public const string esp = "[\u0020]";
-        public const string CarEsp = "[\u005d|\u0040|\u0028|\u0029|{|}|#|\u003f|\u005b]";
-        public const string OpMat = "[-|\u002b|\u002a|%|/]";
-        public const string Num = digito + "+";
-        public const string palRes = "si|mientras|para|leer|imp|log";
-        public const string TipDat = "ent|cad|dec";
-        public const string dec = digito + "*[.]" + Num;
-        public const string cad = "^\"$[" + digito + "|" + letra + "|" + OpLog + "|" + CarEsp + "|" + esp + "]*^\"$";
-        public const string vari = "^(" + letra + "|_)[" + letra + "|" + digito + "|_]*$";
-        public const string operacion = "(" + Num + "|" + dec + ")" + OpMat + "(" + Num + "|" + dec + "|" + ")";
-        public const string consNum = "[[" + TipDat + "]=[" + Num + "|" + dec + "];]";
+        public static readonly string letra = "[a-z|A-Z]";
+        public static readonly string digito = "^[0-9]$";
+        public static readonly string OpLog = "[&|\u007c\u007c|&&|!]";
+        public static readonly string OpRel = "[<|>|=|>=|<=|==|!=]";
+        public static readonly string OpUni = "^[\u002B]{2}$|^[--]{2}$";
+        public static readonly string esp = "[\u0020]";
+        public static readonly string CarEsp = "[\u005d|\u0040|\u0028|\u0029|{|}|#|\u003f|\u005b]";
+        public static readonly string OpMat = @"^(\-|\u002b|\u002a|%|/)$";
+        public static readonly string Num = "^("+digito + "+)$";
+        public static readonly string palRes = "si|mientras|para|leer|imp|log";
+        public static readonly string TipDat = "ent|cad|dec";
+        public static readonly string dec = digito + "*[.]" + Num;
+        public static readonly string cad = "^\"$[" + digito + "|" + letra + "|" + OpLog + "|" + CarEsp + "|" + esp + "]*^\"$";
+        public static readonly string vari = "^(" + letra + "|_)[" + letra + "|" + digito + "|_]*$";
+        public static readonly string operacion = "(" + Num + "|" + dec + ")" + OpMat + "(" + Num + "|" + dec + "|" + ")";
+        public static readonly string consNum = "[[" + TipDat + "]=[" + Num + "|" + dec + "];]";
 
         Regex numero = new Regex(Num);
         Regex log = new Regex(OpLog);
@@ -37,7 +37,7 @@ namespace IDEXlan.Analizer
         Regex decim = new Regex(dec);
         Regex varib = new Regex(vari);
         Regex opera = new Regex(operacion);
-        Regex constNum = new Regex(consNum);
+        Regex readonlyNum = new Regex(consNum);
 
 
         Regex pru = new Regex(OpMat);
@@ -50,7 +50,7 @@ namespace IDEXlan.Analizer
                 return "palabra reservada";
             }
 
-            if (constNum.IsMatch(token))
+            if (readonlyNum.IsMatch(token))
             {
                 return "asignacion numero";
             }
