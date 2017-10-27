@@ -20,7 +20,7 @@ namespace IDEXlan.Analizer
             List<ErrorTableModel> error = new List<ErrorTableModel>();
             Stack<char> carEsp = new Stack<char>();
             bool hayComillas = false;
-
+            string linea="";
             
 
             string[] lineas = Code.Split('\r');
@@ -78,9 +78,14 @@ namespace IDEXlan.Analizer
                 else
                     if (!(lineas[i][lineas[i].Length - 1] == ';'))
                     error.Add(new ErrorTableModel { Line = i + 1, Error = "Error: Se esperaba ';'" });
+                else
+                {
+                    linea += lineas[i];
+                    if(DefVar(i + 1, linea)!=null)
+                        error.Add(DefVar(i + 1, linea));
+                }
+                linea = "";
                 numPyC = 0;
-                
-                error.Add(DefVar(i + 1,lineas[i]));
             }
 
             if (carEsp.Count > 0)
@@ -92,19 +97,20 @@ namespace IDEXlan.Analizer
             return error;
         }
 
-        public ErrorTableModel DefVar(int line,string token)
+        public ErrorTableModel DefVar(int nLine,string sLine)
         {
             string error="",valor;
 
             ExpresionesReg expresion = new ExpresionesReg();
             
-            valor= expresion.ConvertirToken(token);
+            valor= expresion.LineComp(sLine);
 
-            if (valor == "tipo de dato")
-                error = "";
-            else
-                error = "erro en declaracion devariable";
-            return new ErrorTableModel { Line = line, Error=error };
+            if (valor == "definicion de variable")
+                return null;
+            else if (valor == "definicion de constante")
+                return null;
+            error = "error en declaracion de variables";
+            return new ErrorTableModel { Line = nLine, Error=error };
         }
 
     }
