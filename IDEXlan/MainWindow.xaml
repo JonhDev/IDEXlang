@@ -3,14 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IDEXlan"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:mainVM="clr-namespace:IDEXlan.ViewModel"
         mc:Ignorable="d"
+        x:Name="mainWindow"
         Title="X Lang IDE" Height="600" Width="800"
         WindowStartupLocation="CenterScreen"
         Icon="Images/ide.png">
     
     <!--Iconos gratuitos obtenidos de FlatIcon-->
+    <Window.DataContext>
+        <mainVM:MainViewModel/>
+    </Window.DataContext>
     
     <Grid Name="mainGrid">
         <Grid.RowDefinitions>
@@ -21,11 +25,11 @@
         <!--Inician definiciones de la barra de menu-->
         <Menu Grid.Row="0" HorizontalAlignment="Left" Height="20" Background="White" VerticalAlignment="Top" Width="{Binding ElementName=mainGrid, Path=ActualWidth}">
             <MenuItem Header="Archivo">
-                <MenuItem Header="Abrir archivo" x:Name="menuArchivoAbrir"/>
-                <MenuItem Header="Guardar archivo" x:Name="menuArchivoGuardar"/>
-                <MenuItem Header="Cerrar" x:Name="menuArchivoCerrar"/>
+                <MenuItem Header="Abrir archivo" x:Name="menuArchivoAbrir" Command="{Binding OpenBtnCommand}"/>
+                <MenuItem Header="Guardar archivo" x:Name="menuArchivoGuardar" Command="{Binding SaveBtnCommand}"/>
+                <MenuItem Header="Cerrar" x:Name="menuArchivoCerrar" Command="{Binding CloseBtnCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>
             </MenuItem>
-            <MenuItem Header="Ayuda">
+            <MenuItem Header="Ayuda" Command="{Binding AboutBtnCommand}">
                 <MenuItem Header="Acerca de.." x:Name="menuAcerca"/>
             </MenuItem>
         </Menu>
@@ -50,20 +54,20 @@
                 
                 <!--Toolbar-->
                 <ToolBar Margin="0,0,15,0" Height="30" Background="White" Grid.ColumnSpan="2">
-                    <Button x:Name="toolNuevo">
+                    <Button x:Name="toolNuevo" Command="{Binding FastSaveBtnCommand}">
                         <Image Source="Images/add-page.png" Height="15" Width="15"/>
                     </Button>
-                    <Button x:Name="toolGuardar">
+                    <Button x:Name="toolGuardar" Command="{Binding SaveBtnCommand}">
                         <Image Source="Images/floppy-disk.png" Height="15" Width="15"/>
                     </Button>
                     <Separator/>
-                    <Button x:Name="toolTokens">
+                    <Button x:Name="toolTokens" Command="{Binding LexicoAnalizerBtnCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Images/play-button.png" Height="15" Width="15"/>
                             <TextBlock Text="  Lexico"/>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="toolsSyntactic">
+                    <Button x:Name="toolsSyntactic" Command="{Binding TokensBtnCommand}" CommandParameter="{Binding ElementName=tablaError}" >
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Images/play-button.png" Height="15" Width="15"/>
                             <TextBlock Text=" Analisis Sintactico"/>
@@ -72,13 +76,28 @@
                 </ToolBar>
                 <!--termina Toolbar-->
                 
-                <avalonEdit:TextEditor ShowLineNumbers="True" Grid.Row="1" x:Name="textEditor" FontFamily="Consolas" FontSize="12px" Margin="-2,0,2,0" Grid.ColumnSpan="2"/>
-                <Grid Grid.Row="2" x:Name="gridError">
-                    <DataGrid x:Name="tablaError" HorizontalAlignment="Center"
-                                  Visibility="Collapsed"
+                <avalonEdit:TextEditor Document="{Binding Code}" ShowLineNumbers="True" Grid.Row="1" x:Name="textEditor" FontFamily="Consolas" FontSize="12px" Margin="-2,0,2,0" Grid.ColumnSpan="2"/>
+                <Grid Grid.Row="2" x:Name="gridError" 
+                      Visibility="{Binding Visibilidad}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="CornflowerBlue">
+                        <Label Content="Tabla de errores" Foreground="White" FontSize="10"/>
+                        <Button HorizontalAlignment="Right" 
+                                x:Name="btnCerrarErrores"
+                                Command="{Binding CloseErrorWinCommand}"
+                                Content=" X " 
+                                BorderBrush="Transparent"
+                                Background="Transparent" 
+                                Foreground="White" 
+                                Margin="0, 0, 10, 0"/>
+                    </Grid>
+                    <DataGrid x:Name="tablaError"
                                   AutoGenerateColumns="False"
                                   Grid.Row="1"
-                                  Width="{Binding ElementName=gridError, Path=ActualWidth}"
+                                  ItemsSource="{Binding SyntaticAnalizerL}"
                                   CanUserAddRows="False"
                                   SelectionMode="Single"
                                   CanUserDeleteRows="False"
@@ -138,10 +157,11 @@
                             <RowDefinition Height="1*" />
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <TextBox IsReadOnly="True" Foreground="Black" Grid.Row="0" x:Name="lbl_salida" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                        <TextBox IsReadOnly="True" Text="{Binding TextOutput}" Foreground="Black" Grid.Row="0" x:Name="lbl_salida" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
 
                         <!--DataGrid de tabla de tokens-->
                         <DataGrid x:Name="tablaSimbolos" HorizontalAlignment="Center"
+                                  ItemsSource="{Binding LexicoAnalizer}"
                                   AutoGenerateColumns="False"
                                   Grid.Row="1"
                                   Width="{Binding ElementName=gridSalidas, Path=ActualWidth}"
@@ -218,7 +238,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Column="0" x:Name="lblLineas" Background="Transparent" BorderBrush="Transparent"  FontStyle="Oblique" Foreground="White" FontSize="12" Content="Numero de lineas: "/>
+            <Label Grid.Column="0" x:Name="lblLineas" Background="Transparent" BorderBrush="Transparent"  FontStyle="Oblique" Foreground="White" FontSize="12" Content="{Binding LinesCount, Mode=TwoWay}"/>
         
         </Grid>
         <!--Termina Grid de barra de estado-->

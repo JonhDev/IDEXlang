@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IDEXlan
+namespace IDEXlan.Model
 {
-    public class TablaSimbolos
+    public class TablaSimbolosModel
     {
         public string Simbolo { get; set; }
         public string Definicion { get; set; }
