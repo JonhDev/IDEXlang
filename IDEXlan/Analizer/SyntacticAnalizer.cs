@@ -1,4 +1,5 @@
-﻿using IDEXlan.Model;
+﻿using IDEXlan.Helpers;
+using IDEXlan.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,8 @@ namespace IDEXlan.Analizer
             int numPyC = 0;
             for (int i = 0; i < lineas.Length; i++)
             {
+                if (lineas[i].Contains("ent") && lineas[i].Contains("="))
+                    AsignacionVars(VarTypes.Ent, lineas[i]);
                 foreach (char c in lineas[i])
                 {
                     if (c == ';')
@@ -95,6 +98,13 @@ namespace IDEXlan.Analizer
 
 
             return error;
+        }
+
+        public ErrorTableModel AsignacionVars(VarTypes tipo, string linea)
+        {
+            ExpresionesReg reg = new ExpresionesReg();
+            bool ans = reg.CorrectaDeclaracion(linea, tipo);
+            return null;
         }
 
         public ErrorTableModel DefVar(int nLine,string sLine)

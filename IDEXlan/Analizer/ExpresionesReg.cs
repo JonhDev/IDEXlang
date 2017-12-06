@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IDEXlan.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,7 @@ namespace IDEXlan.Analizer
         public const string consNum = "[[" + TipDat + "]=[" + Num + "|" + dec + "];]";
         public const string defVar = "^((\u005Cn)*(ent|cad|dec) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*))(,){0,1})+);$";
         public const string defCons = "^(\u005Cn)*(cons (ent|cad|dec) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*)) = (\"[a-z|A-Z]*\"|[0-9]*)(,){0,1})+);$";
+        public const string isEnt = "ent ([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]) = ([0-9]*);";
 
         Regex numero = new Regex(Num);
         Regex log = new Regex(OpLog);
@@ -46,6 +48,7 @@ namespace IDEXlan.Analizer
 
         Regex pru = new Regex(OpMat);
 
+        //Analizador lexico
         public string ConvertirToken(string token)
         {
             if (palabras.IsMatch(token))
@@ -113,6 +116,19 @@ namespace IDEXlan.Analizer
                 return "cadena";
             }
             return "No asginado";
+        }
+
+        public bool CorrectaDeclaracion(string line, VarTypes tipo)
+        {
+            Regex r;
+            switch(tipo)
+            {
+                case VarTypes.Ent:
+                    r = new Regex(isEnt);
+                    return r.IsMatch(line);
+                default:
+                    throw new Exception("Default case");
+            }
         }
 
         public string LineComp(string line)

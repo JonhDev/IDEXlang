@@ -74,6 +74,7 @@
     <Compile Include="AcercaDe.xaml.cs">
       <DependentUpon>AcercaDe.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\IDEXLanHelpers.cs" />
     <Compile Include="Model\CommandBase.cs" />
     <Compile Include="Model\ErrorTableModel.cs" />
     <Compile Include="Analizer\SyntacticAnalizer.cs" />
