@@ -83,8 +83,8 @@ namespace IDEXlan.Analizer
                 else
                 {
                     linea += lineas[i];
-                    if(DefVar(i + 1, linea)!=null)
-                        error.Add(DefVar(i + 1, linea));
+                    if(DefVar(i + 1, linea, Code)!=null)
+                        error.Add(DefVar(i + 1, linea, Code));
                 }
                 linea = "";
                 numPyC = 0;
@@ -99,27 +99,31 @@ namespace IDEXlan.Analizer
             return error;
         }
 
-        public ErrorTableModel AsignacionVars(VarTypes tipo, string linea)
+        public ErrorTableModel AsignacionVars(VarTypes tipo, string line)
         {
             ExpresionesReg reg = new ExpresionesReg();
             //bool ans = reg.CorrectaDeclaracion(linea, tipo);
             return null;
         }
 
-        public ErrorTableModel DefVar(int nLine,string sLine)
+        public ErrorTableModel DefVar(int nLine,string sLine, string allCode)
         {
             string error="",valor;
 
             ExpresionesReg expresion = new ExpresionesReg();
             
-            valor= expresion.LineComp(sLine);
+            valor= expresion.LineComp(sLine, nLine, allCode);
 
             if (valor == "definicion de variable")
                 return null;
             else if (valor == "definicion de constante")
                 return null;
-            else if (valor == "declaracion entero" || valor == "declaracion decimal" || valor == "declaracion cadena") 
+            else if (valor == "declaracion entero" || valor == "declaracion decimal" || valor == "declaracion cadena")
                 return null;
+            else if (valor == "definicion con variable")
+                return null;
+            else if (valor.Contains("no existe la variable"))
+                return new ErrorTableModel { Line = nLine, Error = $"Error en declaracion de variable, no existe: {valor.Split('|')[1]}" };
             else if (valor == "Error tipo dato entero")
                 return new ErrorTableModel { Line = nLine, Error = "Error en declaracion de variable de tipo entera" };
             else if (valor == "Error tipo dato decimal")

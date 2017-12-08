@@ -28,9 +28,10 @@ namespace IDEXlan.Analizer
         public const string consNum = "[[" + TipDat + "]=[" + Num + "|" + dec + "];]";
         public const string defVar = "^((\u005Cn)*(ent|cad|dec) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*))(,){0,1})+);$";
         public const string defCons = "^(\u005Cn)*(cons (ent|cad|dec) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*)) = (\"[a-z|A-Z]*\"|[0-9]*)(,){0,1})+);$";
-        public const string isEnt = "^(\u005Cn)*(((cons )*)(ent) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*)) = (\u002D*)([0-9]+)(,){0,1})+);$";
-        public const string isDec = "^(\u005Cn)*(((cons )*)(dec) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*)) = (\u002D*)([0-9]+).([0-9]+)(,){0,1})+);$";
-        public const string isCad = "^(\u005Cn)*(((cons )*)(cad) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*)) = \u0022(([0-9]|[a-z|A-Z]|_|.)*)\u0022(,){0,1})+);$";
+        public const string isEnt = "^(\u005Cn)*(((cons )*)(ent) ((([a-z|A-Z]|_)+(([a-z|A-Z]|_|[0-9])*)) = (\u002D*)([0-9]+)(,){0,1})+);$";
+        public const string isDec = "^(\u005Cn)*(((cons )*)(dec) ((([a-z|A-Z]|_)+(([a-z|A-Z]|_|[0-9])*)) = (\u002D*)([0-9]+).([0-9]+)(,){0,1})+);$";
+        public const string isCad = "^(\u005Cn)*(((cons )*)(cad) ((([a-z|A-Z]|_)+(([a-z|A-Z]|_|[0-9])*)) = \u0022(([0-9]|[a-z|A-Z]|_|.)*)\u0022(,){0,1})+);$";
+        public const string asigVar = "^(\u005Cn)*(((cons )*)(cad|ent|dec) ((([a-z|A-Z]|_)+(([a-z|A-Z]|_|[0-9])*)) = (([a-z|A-Z|_]+)([a-z|A-Z|_|[0-9])*)(,){0,1})+);$";
 
         Regex numero = new Regex(Num);
         Regex log = new Regex(OpLog);
@@ -139,7 +140,7 @@ namespace IDEXlan.Analizer
             }
         }
 
-        public string LineComp(string line)
+        public string LineComp(string line, int nLine, string allCode)
         {
             if (DefVar.IsMatch(line))
             {
@@ -149,6 +150,32 @@ namespace IDEXlan.Analizer
             if (DefCons.IsMatch(line))
             {
                 return "definicion de constante";
+            }
+
+            if(line.Contains("ent")||line.Contains("cad")||line.Contains("dec") && line.Contains("="))
+            {
+                Regex r = new Regex(asigVar);
+                if (r.IsMatch(line))
+                {
+                    var splitLine = line.Split('=');
+                    string varToSearch = splitLine[1].Substring(1, splitLine[1].Length - 2);
+                    var spl = allCode.Split('\r');
+                    int n = 0;
+                    for(int i = 0; i < nLine; i++)
+                    {
+                        var temp = spl[i].Split(' ');
+                        foreach (var item in temp)
+                        {
+                            if (item == varToSearch || item == (varToSearch +";"))
+                                n++;
+                        }
+                    }
+                    if(n>1)
+                        return "definicion con variable";
+                    else
+                        return $"no existe la variable|{varToSearch}";
+                }
+
             }
 
             if(line.Contains("ent") && line.Contains("="))
