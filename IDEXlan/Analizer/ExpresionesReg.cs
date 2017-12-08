@@ -28,7 +28,9 @@ namespace IDEXlan.Analizer
         public const string consNum = "[[" + TipDat + "]=[" + Num + "|" + dec + "];]";
         public const string defVar = "^((\u005Cn)*(ent|cad|dec) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*))(,){0,1})+);$";
         public const string defCons = "^(\u005Cn)*(cons (ent|cad|dec) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*)) = (\"[a-z|A-Z]*\"|[0-9]*)(,){0,1})+);$";
-        public const string isEnt = "ent ([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]) = ([0-9]*);";
+        public const string isEnt = "^(\u005Cn)*(((cons )*)(ent) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*)) = (\u002D*)([0-9]+)(,){0,1})+);$";
+        public const string isDec = "^(\u005Cn)*(((cons )*)(dec) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*)) = (\u002D*)([0-9]+).([0-9]+)(,){0,1})+);$";
+        public const string isCad = "^(\u005Cn)*(((cons )*)(cad) ((([a-z|A-Z]|_)+|(([a-z|A-Z]|_)[0-9]*)) = \u0022(([0-9]|[a-z|A-Z]|_|.)*)\u0022(,){0,1})+);$";
 
         Regex numero = new Regex(Num);
         Regex log = new Regex(OpLog);
@@ -118,14 +120,20 @@ namespace IDEXlan.Analizer
             return "No asginado";
         }
 
-        public bool CorrectaDeclaracion(string line, VarTypes tipo)
+        public string CorrectaDeclaracion(string line, VarTypes tipo)
         {
             Regex r;
             switch(tipo)
             {
                 case VarTypes.Ent:
                     r = new Regex(isEnt);
-                    return r.IsMatch(line);
+                    return r.IsMatch(line) ? "declaracion entero" : "Error tipo dato entero";
+                case VarTypes.Dec:
+                    r = new Regex(isDec);
+                    return r.IsMatch(line) ? "declaracion decimal" : "Error tipo dato decimal";
+                case VarTypes.Cad:
+                    r = new Regex(isCad);
+                    return r.IsMatch(line) ? "declaracion cadena" : "Error tipo dato cadena";
                 default:
                     throw new Exception("Default case");
             }
@@ -141,6 +149,21 @@ namespace IDEXlan.Analizer
             if (DefCons.IsMatch(line))
             {
                 return "definicion de constante";
+            }
+
+            if(line.Contains("ent") && line.Contains("="))
+            {
+                return CorrectaDeclaracion(line, VarTypes.Ent);
+            }
+
+            if (line.Contains("dec") && line.Contains("="))
+            {
+                return CorrectaDeclaracion(line, VarTypes.Dec);
+            }
+
+            if (line.Contains("cad") && line.Contains("="))
+            {
+                return CorrectaDeclaracion(line, VarTypes.Cad);
             }
 
             return "Error";

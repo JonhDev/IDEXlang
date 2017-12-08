@@ -28,8 +28,7 @@ namespace IDEXlan.Analizer
             int numPyC = 0;
             for (int i = 0; i < lineas.Length; i++)
             {
-                if (lineas[i].Contains("ent") && lineas[i].Contains("="))
-                    AsignacionVars(VarTypes.Ent, lineas[i]);
+                
                 foreach (char c in lineas[i])
                 {
                     if (c == ';')
@@ -103,7 +102,7 @@ namespace IDEXlan.Analizer
         public ErrorTableModel AsignacionVars(VarTypes tipo, string linea)
         {
             ExpresionesReg reg = new ExpresionesReg();
-            bool ans = reg.CorrectaDeclaracion(linea, tipo);
+            //bool ans = reg.CorrectaDeclaracion(linea, tipo);
             return null;
         }
 
@@ -119,6 +118,14 @@ namespace IDEXlan.Analizer
                 return null;
             else if (valor == "definicion de constante")
                 return null;
+            else if (valor == "declaracion entero" || valor == "declaracion decimal" || valor == "declaracion cadena") 
+                return null;
+            else if (valor == "Error tipo dato entero")
+                return new ErrorTableModel { Line = nLine, Error = "Error en declaracion de variable de tipo entera" };
+            else if (valor == "Error tipo dato decimal")
+                return new ErrorTableModel { Line = nLine, Error = "Error en declaracion de variable de tipo decimal" };
+            else if (valor == "Error tipo dato cadena")
+                return new ErrorTableModel { Line = nLine, Error = "Error en declaracion de variable de tipo cadena" };
             error = "error en declaracion de variables";
             return new ErrorTableModel { Line = nLine, Error=error };
         }
