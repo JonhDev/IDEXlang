@@ -18,8 +18,9 @@ namespace IDEXlan.ViewModel
     {
         string rutaArchivoActual;
         string[] tokens = new string[0];
-        private TextDocument code;
 
+        //Propiedad que con ayuda de INotifyPropertyChanged cambia su contenido por medio de binding de acuerdo al contenido del TexDocument en la vista XAML
+        private TextDocument code;
         public TextDocument Code
         {
             get { return code; }
@@ -31,8 +32,8 @@ namespace IDEXlan.ViewModel
             }
         }
 
+        //Este contiene una lista de un modelo llamada TablaSimbolModel que contiene las propiedades necesarias para ser enlistadas en un DataGrid por binding
         private List<TablaSimbolosModel> lexicoAnalizer;
-
         public List<TablaSimbolosModel> LexicoAnalizer
         {
             get { return lexicoAnalizer; }
@@ -43,8 +44,8 @@ namespace IDEXlan.ViewModel
             }
         }
 
+        //Este contiene una lista de un modelo llamada ErrorTableModel que contiene las propiedades necesarias para ser enlistadas en un DataGrid por binding
         private List<ErrorTableModel> syntaticAnalizerL;
-
         public List<ErrorTableModel> SyntaticAnalizerL
         {
             get { return syntaticAnalizerL; }
@@ -55,8 +56,8 @@ namespace IDEXlan.ViewModel
             }
         }
 
+        //Propiedad que enlista los resultados del analizador lexico en un TextBox
         private string textOutput;
-
         public string TextOutput
         {
             get { return textOutput; }
@@ -67,8 +68,8 @@ namespace IDEXlan.ViewModel
             }
         }
 
+        //Propiedad que lleva el conteo de lineas en base al Documento
         private string linesCount;
-
         public string LinesCount
         {
             get { return $"Numero de lineas: {linesCount}";  }
@@ -79,14 +80,15 @@ namespace IDEXlan.ViewModel
             }
         }
 
+        //Propidad que maneja la visibilidad de la ventana de errores
         private Visibility Visibility;
-
         public Visibility Visibilidad
         {
             get { return Visibility; }
             set { Visibility = value; OnPropertyChanged("Visibilidad"); }
         }
 
+        //Comandos para las acciones de los botones en la vista XAML por bindings
         public ICommand TokensBtnCommand { get; set; }
         public ICommand SaveBtnCommand { get; set; }
         public ICommand FastSaveBtnCommand { get; set; }
@@ -113,6 +115,7 @@ namespace IDEXlan.ViewModel
             CloseErrorWinCommand = new CommandBase(p => Visibilidad = Visibility.Collapsed);
         }
 
+        //Metodo encargado de guardar el archivo con extension *.xlang como parametros requiere el codigo
         public void GuardarArchivo(string codigo)
         {
             if (rutaArchivoActual != string.Empty)
@@ -140,6 +143,7 @@ namespace IDEXlan.ViewModel
             }
         }
 
+        //Metodo encargado de abrir archivos por interfaz grafica con extension *.xlang
         public void AbrirArchivoUI()
         {
             OpenFileDialog abrir = new OpenFileDialog
@@ -155,6 +159,7 @@ namespace IDEXlan.ViewModel
             }
         }
 
+        //Metodo que lanza una notificacion de guardado para crear un archivo nuevo
         public void GuardadoRapido()
         {
             if (rutaArchivoActual != string.Empty || Code.Text != string.Empty)
@@ -175,6 +180,7 @@ namespace IDEXlan.ViewModel
             }
         }
 
+        //Metodo encargado de separar los tokens del codigo para su analisis
         public void LexicoAnalizerUI()
         {
             TextOutput = "";
@@ -233,6 +239,7 @@ namespace IDEXlan.ViewModel
             }
         }
 
+        //Metodo encargado de hacer el analisis Sintactico en el codigo
         public void SyntaticAnalizer(object parameter)
         {
             //Grid g = parameter as Grid;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace IDEXlan.Model
 {
+    //Clase modelo que ayuda al listado de tokens en los analizadores
     public class TablaSimbolosModel
     {
         public string Simbolo { get; set; }

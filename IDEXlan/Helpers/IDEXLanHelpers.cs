@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace IDEXlan.Helpers
 {
+    //Enum que tiene los tipos de variables aceptados
     public enum VarTypes
     {
         Ent,

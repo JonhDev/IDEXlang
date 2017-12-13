@@ -7,7 +7,8 @@ using System.Windows.Input;
 
 namespace IDEXlan.Model
 {
-    class CommandBase : ICommand
+    //Clase base para la creacion de commandos para aplicar en XAML con MVVM
+    public class CommandBase : ICommand
     {        
         private Action<object> execAction;
         private Func<object, bool> canExecFunc;

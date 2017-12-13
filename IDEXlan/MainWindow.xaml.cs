@@ -16,6 +16,8 @@ namespace IDEXlan
         public MainWindow()
         {
             InitializeComponent();
+            //Se hace uso de MVVM por lo cual toda la logica de programacion se encuentra en el View Model de esta clase
+            //View Model de esta clase: MainViewModel.cs
         }
     }
 }

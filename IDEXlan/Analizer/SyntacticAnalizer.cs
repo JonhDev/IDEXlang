@@ -8,14 +8,20 @@ using System.Threading.Tasks;
 
 namespace IDEXlan.Analizer
 {
+    //Clase que contiene todas las definiciones del analizador sintactico hace uso de la clase ExpresionesReg
     public class SyntacticAnalizer
     {
+        //Propiedad que contiene el codigo que sera analizado se hace set en el desde el constructor
         public string Code { get; set; }
+
+        //Constructor de la clase que requiere el codigo a identificar
         public SyntacticAnalizer(string code)
         {
             Code = code;
         }
 
+        //Metodo principal que permite el analisis de codigo almacenado en la propiedad Code retorna una lista de un modelo llamado ErrorTableModel
+        //indispensable para la identificacion de errores, itera linea por linea el codigo y la analiza
         public List<ErrorTableModel> Analize()
         {
             List<ErrorTableModel> error = new List<ErrorTableModel>();
@@ -29,6 +35,7 @@ namespace IDEXlan.Analizer
             for (int i = 0; i < lineas.Length; i++)
             {
                 
+                //Itera para validacion de ; y balanceo de {}() [] ""
                 foreach (char c in lineas[i])
                 {
                     if (c == ';')
@@ -99,13 +106,8 @@ namespace IDEXlan.Analizer
             return error;
         }
 
-        public ErrorTableModel AsignacionVars(VarTypes tipo, string line)
-        {
-            ExpresionesReg reg = new ExpresionesReg();
-            //bool ans = reg.CorrectaDeclaracion(linea, tipo);
-            return null;
-        }
-
+        //Este metodo es el responsable de identificar si la declaracion de variables es correcta asi mismo de indicar cuando hay un error a traves
+        //del modelo ErrorTableModel, se apoya en la clase ExpresionesReg en el metodo LineComp.
         public ErrorTableModel DefVar(int nLine,string sLine, string allCode)
         {
             string error="",valor;

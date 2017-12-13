@@ -8,9 +8,11 @@ namespace NotacionPolaca.Lib
 {
     public class NotPolaca
     {
+        //Campos encargados de actuar como salida y pila para obtener notacion polaca
         Queue<char> salida = new Queue<char>();
         Stack<char> pila = new Stack<char>();
 
+        //Metodo encargado de procesar una operacion (5+2*4) a notacion polaca (524*+)
         public string ObtenerNotacion(string cadena)
         {
             for (int i = 0; i < cadena.Length; i++)
@@ -68,6 +70,7 @@ namespace NotacionPolaca.Lib
             return cadenaFinal.ToString();
         }
 
+        //Metodo encargado de obtener el resultado de una operacion, requiere una cadena en notacion polaca (ej: 524*+)
         public double ObtenerResultado(string exprNotPolaca)
         {
             Stack<string> pila = new Stack<string>();

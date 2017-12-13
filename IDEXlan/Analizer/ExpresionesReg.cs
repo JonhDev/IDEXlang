@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace IDEXlan.Analizer
 {
+    //Clase que contine las expresiones regulares que ayudan en el analisis lexico y sintactico del compilador
    public  class ExpresionesReg
     {
         public const string letra = "^[a-z|A-Z]$";
@@ -33,6 +34,8 @@ namespace IDEXlan.Analizer
         public const string isCad = "^(\u005Cn)*(((cons )*)(cad) ((([a-z|A-Z]|_)+(([a-z|A-Z]|_|[0-9])*)) = \u0022(([0-9]|[a-z|A-Z]|_|.)*)\u0022(,){0,1})+);$";
         public const string asigVar = "^(\u005Cn)*(((cons )*)(cad|ent|dec) ((([a-z|A-Z]|_)+(([a-z|A-Z]|_|[0-9])*)) = (([a-z|A-Z|_]+)([a-z|A-Z|_|[0-9])*)(,){0,1})+);$";
 
+        //Aqui comienza el analisis por medio de Regex para el analisis lexico
+        //TODO Mejora: Buscar mejores maneras de programar esto 
         Regex numero = new Regex(Num);
         Regex log = new Regex(OpLog);
         Regex rel = new Regex(OpRel);
@@ -121,6 +124,10 @@ namespace IDEXlan.Analizer
             return "No asginado";
         }
 
+        //Termina TODO Mejora
+
+        //Este metodo valida la correcta declaracion de los tres tipos de datos (cad, ent, dec) de tipo: "ent var1 = 10; ent var2 = var1; cad var3 = "cadena"; "
+        //A traves de expresiones regulares identifica si la sintaxis de decalracion es correcta
         public string CorrectaDeclaracion(string line, VarTypes tipo)
         {
             Regex r;
@@ -140,6 +147,7 @@ namespace IDEXlan.Analizer
             }
         }
 
+        //Metodo que valida la definicion de cadenas con expresiones regulares de tipo "ent var1, var2, var3, var4;
         public string LineComp(string line, int nLine, string allCode)
         {
             if (DefVar.IsMatch(line))
